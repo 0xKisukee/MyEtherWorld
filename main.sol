@@ -896,10 +896,4 @@ contract MyEtherWorld is ERC721Enumerable, Ownable {
     function _baseURI() internal view virtual override returns (string memory) {
         return baseTokenURI;
     }
-    
-    //MODIFIER
-    modifier onlyMember2 {
-        require(msg.sender == member2);
-    _;
-    }
 }
