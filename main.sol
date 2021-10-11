@@ -830,7 +830,7 @@ contract MyEtherWorld is ERC721Enumerable, Ownable {
     address member1 = 0x1002CA2d139962cA9bA0B560C7A703b4A149F6e0;
     address member2 = 0x1002CA2d139962cA9bA0B560C7A703b4A149F6e0;
     address member3 = 0x1002CA2d139962cA9bA0B560C7A703b4A149F6e0;
-    mapping (uint => bool) isMinted;
+    mapping (uint => bool) public isMinted;
     mapping (address => string) usernameOf;
 
     constructor(string memory baseURI) ERC721("MyEtherWorld", "MEW") {
@@ -851,6 +851,10 @@ contract MyEtherWorld is ERC721Enumerable, Ownable {
     function getUsername(address _user) public view returns (string memory) {
         return usernameOf[_user];
     }
+    
+    function getMinted(uint _id) public view returns (bool) {
+        return isMinted[_id];
+    }
 
     function mint() public payable {
         require(totalSupply() + 1 <= MEWCap, "Cans cap will be exceeded.");
@@ -864,17 +868,12 @@ contract MyEtherWorld is ERC721Enumerable, Ownable {
         lastId += 1;
     }
     
-    function mintParcel(uint _amount, uint[] memory _ids) public payable {
+    function mintParcel(uint  _id) public payable {
         require(totalSupply() + 1 <= MEWCap, "Cans cap will be exceeded.");
         require(msg.value >= price, "Ether amount is not correct.");
+        require(isMinted[_id] == false, "Can already minted.");
         
-        for (uint i = 0; i < _amount; i += 1) {
-            require(isMinted[_ids[i]] == false, "Can already minted.");
-        }
-        
-        for (uint i = 0; i < _amount; i += 1) {
-            _create(msg.sender, _ids[i]);
-        }
+        _create(msg.sender, _id);
     }
     
     function setUsername(string memory _username) public {
